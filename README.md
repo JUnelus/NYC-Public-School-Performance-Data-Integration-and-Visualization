@@ -31,15 +31,15 @@ NYC-Public-School-Performance-Data-Integration-and-Visualization/
 
 ## Data Sources
 
-- **School Demographics** (borough-level): https://data.cityofnewyork.us/resource/vquv-pjuh.json
-  - Borough enrollment, poverty rates, economic need index, racial/ethnic demographics by school year
-- **School Quality Reviews** (school-level): https://data.cityofnewyork.us/resource/ci36-d7ea.json
-  - Individual school survey scores, quality review ratings, ELA/Math performance, enrollment
+- **School Demographics** (school-level, 2017–2022): https://data.cityofnewyork.us/resource/c7ru-d68s.json
+  - Per-school enrollment, poverty rates, economic need index, racial/ethnic demographics (9,251 records, 1,882 schools)
+- **School Quality Reviews** (school-level, 2014–2020): https://data.cityofnewyork.us/resource/ci36-d7ea.json
+  - Individual school survey scores, quality review ratings, ELA/Math performance, enrollment (485 records)
 
 ## How It Works
 
 1. **Data Acquisition** fetches all records with automatic pagination from both Socrata API endpoints
-2. **Data Processing** maps each school's DBN district code to a borough, derives the school year from review dates, converts all numeric fields, and performs a many-to-one merge enriching each school with its borough's demographic data
+2. **Data Processing** maps each school's DBN district code to a borough, derives the school year from review dates, converts all numeric fields (including `%`-formatted values), and performs a direct school-level merge on `dbn + year`
 3. **Visualization** creates 6 interactive charts exploring relationships between school performance, economic need, survey quality, and borough demographics
 
 ## Setup and Execution

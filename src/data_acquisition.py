@@ -2,6 +2,10 @@
 Data Acquisition Module
 Fetches NYC school demographics and performance data from the NYC Open Data API (Socrata).
 Implements pagination to retrieve all records.
+
+Data Sources:
+  - School Demographics (school-level, 2017-2022): c7ru-d68s
+  - School Quality Reviews (school-level): ci36-d7ea
 """
 
 import requests
@@ -16,10 +20,12 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAW_DATA_DIR = os.path.join(BASE_DIR, "data", "raw")
 
-DEMOGRAPHICS_ENDPOINT = "https://data.cityofnewyork.us/resource/vquv-pjuh.json"
+# School-level demographics (per-school enrollment, poverty, economic need, race) — 2017-2022
+DEMOGRAPHICS_ENDPOINT = "https://data.cityofnewyork.us/resource/c7ru-d68s.json"
+# School Quality Reviews (survey scores, ELA/Math ratings, quality review ratings)
 PERFORMANCE_ENDPOINT = "https://data.cityofnewyork.us/resource/ci36-d7ea.json"
 
-BATCH_SIZE = 1000
+BATCH_SIZE = 5000
 
 
 def fetch_all_records(api_endpoint: str, params: dict = None) -> list:
@@ -70,10 +76,13 @@ def save_json(data: list, filepath: str) -> None:
 if __name__ == "__main__":
     logger.info("Starting data acquisition...")
 
+    logger.info("Fetching school-level demographics (c7ru-d68s)...")
     demographics_data = fetch_all_records(DEMOGRAPHICS_ENDPOINT)
+
+    logger.info("Fetching school quality reviews (ci36-d7ea)...")
     performance_data = fetch_all_records(PERFORMANCE_ENDPOINT)
 
     save_json(demographics_data, os.path.join(RAW_DATA_DIR, "school_demographics.json"))
     save_json(performance_data, os.path.join(RAW_DATA_DIR, "school_performance.json"))
 
-    logger.info("Data acquisition complete.")
+    logger.info(f"Data acquisition complete. Demographics: {len(demographics_data)}, Performance: {len(performance_data)}")
