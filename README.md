@@ -1,73 +1,96 @@
 # NYC Public School Performance Data Integration and Visualization
 
-This project demonstrates the integration of publicly available NYC public school performance data from multiple sources, its transformation, and visualization using Python. It showcases skills in data acquisition, API interaction, data manipulation with Pandas, and visualization with Plotly, all within a Linux environment.
+This project integrates publicly available NYC public school performance data from the [NYC Open Data](https://opendata.cityofnewyork.us/) API, merges school-level quality review data with borough-level demographics, and produces interactive visualizations using Python.
+
+## Key Features
+
+- **Paginated API fetching** — retrieves all records from Socrata endpoints
+- **District-to-borough mapping** — maps school DBN codes to NYC boroughs
+- **School year derivation** — extracts academic year from quality review dates
+- **Borough-level enrichment** — merges school performance with borough demographics (enrollment, poverty rate, economic need index, racial demographics)
+- **Numeric type conversion** — ensures all quantitative fields are properly typed
+- **6 interactive Plotly visualizations** including scatter plots, bar charts, box plots, heatmaps
 
 ## Project Structure
-````
-nyc-school-performance/
+```
+NYC-Public-School-Performance-Data-Integration-and-Visualization/
 ├── data/
 │   ├── raw/
-│   │   ├── school_demographics.json
-│   │   └── school_performance.json
+│   │   ├── school_demographics.json   # Borough-level demographics (25 records)
+│   │   └── school_performance.json    # School-level quality reviews (485 records)
 │   └── processed/
-│       └── merged_school_data.csv
+│       └── merged_school_data.csv     # Merged dataset (421 schools, 70 columns)
 ├── notebooks/
 │   └── data_integration_and_visualization.ipynb
 ├── src/
-│   ├── data_acquisition.py
-│   └── data_processing.py
+│   ├── data_acquisition.py            # API fetching with pagination
+│   └── data_processing.py             # Cleaning, mapping, merging
 ├── requirements.txt
 └── README.md
-````
+```
 
 ## Data Sources
 
-- **NYC Open Data API:**
-    - School demographics data: https://data.cityofnewyork.us/resource/vquv-pjuh.json
-    - School performance data: https://data.cityofnewyork.us/resource/ci36-d7ea.json
+- **School Demographics** (borough-level): https://data.cityofnewyork.us/resource/vquv-pjuh.json
+  - Borough enrollment, poverty rates, economic need index, racial/ethnic demographics by school year
+- **School Quality Reviews** (school-level): https://data.cityofnewyork.us/resource/ci36-d7ea.json
+  - Individual school survey scores, quality review ratings, ELA/Math performance, enrollment
+
+## How It Works
+
+1. **Data Acquisition** fetches all records with automatic pagination from both Socrata API endpoints
+2. **Data Processing** maps each school's DBN district code to a borough, derives the school year from review dates, converts all numeric fields, and performs a many-to-one merge enriching each school with its borough's demographic data
+3. **Visualization** creates 6 interactive charts exploring relationships between school performance, economic need, survey quality, and borough demographics
 
 ## Setup and Execution
 
-1. **Environment Setup (Linux):**
-    - Create a new project directory: `mkdir nyc-school-performance`
-    - Navigate to the directory: `cd nyc-school-performance`
-    - Create a virtual environment (recommended): `python3 -m venv .venv`
-    - Activate the virtual environment: `source .venv/bin/activate`
+1. **Create & activate virtual environment:**
+   ```bash
+   python -m venv .venv
+   # Windows: .venv\Scripts\activate
+   # Linux/Mac: source .venv/bin/activate
+   ```
 
-2. **Install Dependencies:**
-    - Install the required packages: `pip install -r requirements.txt`
+2. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-3. **Data Acquisition:**
-    - Run the `data_acquisition.py` script to fetch and save the raw data: `python src/data_acquisition.py`
+3. **Fetch latest data:**
+   ```bash
+   python src/data_acquisition.py
+   ```
 
-4. **Data Processing:**
-    - Run the `data_processing.py` script to process and merge the data: `python src/data_processing.py`
+4. **Process and merge data:**
+   ```bash
+   python src/data_processing.py
+   ```
 
-5. **Data Visualization:**
-    - Open and run the `data_integration_and_visualization.ipynb` Jupyter Notebook to generate the visualizations.
-
-## Skills Demonstrated
-
-- Data acquisition from APIs
-- Data manipulation and transformation with Pandas
-- Data visualization with Plotly
-- Python programming
-- Linux environment
-- Version control with Git
+5. **Run visualizations:**
+   Open `notebooks/data_integration_and_visualization.ipynb` in Jupyter/PyCharm and run all cells.
 
 ## Visualizations
 
-The Jupyter Notebook generates the following visualizations:
+| # | Chart                             | Description                                                              |
+|---|-----------------------------------|--------------------------------------------------------------------------|
+| 1 | Scatter: ELA vs Economic Need     | School ELA performance against borough economic need, colored by borough |
+| 2 | Bar: Avg ELA by Borough           | Average Grade 8 ELA performance across boroughs                          |
+| 3 | Box: Economic Need by Borough     | Distribution of borough economic need index                              |
+| 4 | Scatter: Math vs ELA              | Correlation between math and ELA performance, colored by school type     |
+| 5 | Heatmap: Survey Scores            | Average survey dimension scores by borough                               |
+| 6 | Scatter: Poverty vs Economic Need | Borough-level poverty rate vs economic need index over time              |
 
-- Scatter plot of ELA Performance vs. Economic Need Index, colored by borough.
-- Bar chart of Average ELA Performance by Borough.
-- Box plot of the distribution of Economic Need Index across boroughs.
+## Skills Demonstrated
 
-## Further Exploration
+- REST API interaction with pagination (Socrata Open Data)
+- Data cleaning, type conversion, and domain-specific mapping (DBN → borough)
+- Multi-source data integration (many-to-one merge)
+- Interactive visualization with Plotly
+- Python, Pandas, logging, project organization
 
-This project can be extended by:
-
-- Adding more data sources (e.g., school quality reports, attendance data).
-- Performing more in-depth data analysis and exploration.
-- Creating interactive visualizations.
-- Building a web application to display the data and visualizations.
+![img.png](img/img.png)
+![img_1.png](img/img_1.png)
+![img_2.png](img/img_2.png)
+![img_3.png](img/img_3.png)
+![img_4.png](img/img_4.png)
+![img_5.png](img/img_5.png)
